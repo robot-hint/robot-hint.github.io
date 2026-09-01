@@ -1,0 +1,314 @@
+---
+interface Metric {
+  hint: number;
+  pi: number;
+  delta: number;
+}
+
+interface Task {
+  id: string;
+  label: string;
+  title: string;
+  description: string;
+  metrics: {
+    is: Metric;
+    sub: Metric;
+    full: Metric;
+  };
+}
+
+interface Props {
+  setting: "id" | "ood";
+}
+
+const { setting } = Astro.props;
+
+const idTasks: Task[] = [
+  {
+    id: "sorting",
+    label: "Sorting",
+    title: "Fruit-Vegetable Sorting",
+    description:
+      "Language-conditioned category-to-basket mapping with repeated pick-and-place.",
+    metrics: {
+      is: { hint: 91.2, pi: 52.2, delta: 39.0 },
+      sub: { hint: 91.2, pi: 52.2, delta: 39.0 },
+      full: { hint: 60.0, pi: 10.0, delta: 50.0 },
+    },
+  },
+  {
+    id: "spelling",
+    label: "Spelling",
+    title: "Word Spelling",
+    description:
+      "Sequential letter selection and placement from a high-level instruction.",
+    metrics: {
+      is: { hint: 97.9, pi: 44.7, delta: 53.2 },
+      sub: { hint: 95.7, pi: 42.6, delta: 53.1 },
+      full: { hint: 86.7, pi: 13.3, delta: 73.4 },
+    },
+  },
+  {
+    id: "insertion",
+    label: "Insertion",
+    title: "Peg-in-Hole Insertion",
+    description:
+      "Semantic target selection followed by contact-rich placement and insertion.",
+    metrics: {
+      is: { hint: 100.0, pi: 35.0, delta: 65.0 },
+      sub: { hint: 67.5, pi: 27.5, delta: 40.0 },
+      full: { hint: 40.0, pi: 5.0, delta: 35.0 },
+    },
+  },
+];
+
+const oodTasks: Task[] = [
+  {
+    id: "sorting",
+    label: "Sorting",
+    title: "Fruit-Vegetable Sorting",
+    description:
+      "Unseen objects and containers with a novel category-to-goal mapping.",
+    metrics: {
+      is: { hint: 82.6, pi: 56.5, delta: 26.1 },
+      sub: { hint: 80.4, pi: 52.2, delta: 28.2 },
+      full: { hint: 30.0, pi: 0.0, delta: 30.0 },
+    },
+  },
+  {
+    id: "spelling",
+    label: "Spelling",
+    title: "Word Spelling",
+    description: "Unseen letters, colors, sizes, layouts, and goal words.",
+    metrics: {
+      is: { hint: 95.5, pi: 40.9, delta: 54.6 },
+      sub: { hint: 87.5, pi: 36.4, delta: 51.1 },
+      full: { hint: 30.0, pi: 0.0, delta: 30.0 },
+    },
+  },
+  {
+    id: "insertion",
+    label: "Insertion",
+    title: "Peg-in-Hole Insertion",
+    description:
+      "Unseen peg–base combinations and spatial relations such as left, right, above, and below.",
+    metrics: {
+      is: { hint: 90.0, pi: 26.7, delta: 63.3 },
+      sub: { hint: 55.0, pi: 20.0, delta: 35.0 },
+      full: { hint: 30.0, pi: 0.0, delta: 30.0 },
+    },
+  },
+];
+
+const tasks = setting === "id" ? idTasks : oodTasks;
+const settingKicker = setting === "id" ? "In-distribution" : "Out-of-distribution";
+
+const metricCards = [
+  { key: "is" as const, label: "Intention Score", short: "IS" },
+  { key: "sub" as const, label: "Subtask Success Rate", short: "Sub. SR" },
+  { key: "full" as const, label: "Full-Task Success Rate", short: "Full SR" },
+];
+
+const rollouts = [
+  { method: "pi" as const, name: "π₀.₅", trial: 1 },
+  { method: "hint" as const, name: "HINT", trial: 1 },
+  { method: "pi" as const, name: "π₀.₅", trial: 2 },
+  { method: "hint" as const, name: "HINT", trial: 2 },
+];
+---
+
+<div
+  class="experiment-demos not-prose my-8 overflow-hidden rounded-[1.75rem] border border-zinc-200/90 bg-white shadow-[0_24px_60px_-36px_rgba(15,23,42,0.35)] dark:border-zinc-800 dark:bg-zinc-950"
+  data-setting={setting}
+>
+  <div
+    class="border-b border-zinc-100 bg-gradient-to-br from-blue-50/80 via-white to-zinc-50 px-5 py-5 sm:px-8 sm:py-6 dark:border-zinc-800 dark:from-blue-950/30 dark:via-zinc-950 dark:to-zinc-950"
+  >
+    <div
+      class="flex flex-wrap justify-center gap-2"
+      role="tablist"
+      aria-label={`${settingKicker} tasks`}
+    >
+      {
+        tasks.map((task, index) => (
+          <button
+            type="button"
+            data-task-btn={task.id}
+            aria-selected={index === 0 ? "true" : "false"}
+            class="rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-600 shadow-sm transition-all hover:border-blue-300 hover:text-blue-700 aria-selected:border-transparent aria-selected:bg-blue-600 aria-selected:text-white aria-selected:shadow-md aria-selected:hover:bg-blue-700 aria-selected:hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-blue-500 dark:aria-selected:bg-blue-500 dark:aria-selected:text-zinc-950"
+          >
+            {task.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  {
+    tasks.map((task, index) => (
+      <div
+        data-task-panel={task.id}
+        class:list={[index === 0 ? "block" : "hidden"]}
+        role="tabpanel"
+      >
+        <div class="grid grid-cols-1 gap-4 px-5 py-5 sm:grid-cols-3 sm:px-8">
+          {metricCards.map((card) => {
+            const metric = task.metrics[card.key];
+            const width = Math.max(8, Math.min(100, metric.hint));
+            return (
+              <div class="rounded-2xl border border-zinc-200 bg-white px-5 py-5 shadow-[0_10px_30px_-22px_rgba(15,23,42,0.4)] dark:border-zinc-800 dark:bg-zinc-900">
+                <p class="m-0 text-[11px] font-semibold tracking-[0.16em] text-zinc-400 uppercase">
+                  {card.short}
+                </p>
+                <p class="mt-2 mb-0 text-[2rem] leading-none font-semibold tracking-tight text-blue-700 dark:text-blue-300">
+                  +{metric.delta.toFixed(1)}
+                  <span class="ml-1 text-sm font-medium text-zinc-400">pp</span>
+                </p>
+                <p class="mt-2 mb-3 text-sm text-zinc-500 dark:text-zinc-400">
+                  {card.label} vs π<sub>0.5</sub>
+                </p>
+                <div class="h-1.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+                  <div
+                    class="h-full rounded-full bg-gradient-to-r from-blue-500 to-sky-400"
+                    style={`width: ${width}%`}
+                  />
+                </div>
+                <p class="mt-2 mb-0 text-xs text-zinc-500">
+                  {metric.pi.toFixed(1)}% →{" "}
+                  <span class="font-semibold text-zinc-800 dark:text-zinc-200">
+                    {metric.hint.toFixed(1)}%
+                  </span>
+                </p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div class="border-t border-zinc-100 px-5 py-6 sm:px-8 sm:py-7 dark:border-zinc-800">
+          <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p class="m-0 text-[11px] font-semibold tracking-[0.2em] text-blue-600 uppercase dark:text-blue-300">
+                {task.title} rollouts
+              </p>
+              <h4 class="mt-1 mb-0 text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl dark:text-zinc-50">
+                {task.description}
+              </h4>
+            </div>
+            <p class="m-0 max-w-sm text-sm leading-relaxed text-zinc-500 lg:text-right">
+              Each row pairs the same rollout index so HINT and π<sub>0.5</sub>{" "}
+              can be compared directly.
+            </p>
+          </div>
+
+          <span class="mb-5 inline-flex rounded-full bg-blue-600 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-white uppercase">
+            {settingKicker}
+          </span>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            {rollouts.map((item) => {
+              const ours = item.method === "hint";
+              return (
+                <article
+                  class:list={[
+                    "overflow-hidden rounded-2xl border bg-white p-4 dark:bg-zinc-950",
+                    ours
+                      ? "border-emerald-300 shadow-[0_12px_32px_-20px_rgba(16,185,129,0.55)] dark:border-emerald-700"
+                      : "border-zinc-200 dark:border-zinc-800",
+                  ]}
+                >
+                  <div class="mb-3 flex items-start justify-between gap-3">
+                    <div>
+                      <p
+                        class:list={[
+                          "m-0 text-base font-semibold",
+                          ours
+                            ? "text-emerald-700 dark:text-emerald-300"
+                            : "text-zinc-900 dark:text-zinc-100",
+                        ]}
+                      >
+                        {item.name}
+                      </p>
+                      <p
+                        class:list={[
+                          "mt-1 mb-0 text-sm font-medium",
+                          ours
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-zinc-400",
+                        ]}
+                      >
+                        Coming soon
+                      </p>
+                    </div>
+                    <span class="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+                      Rollout {item.trial}
+                    </span>
+                  </div>
+
+                  <div class="video-shell relative aspect-video overflow-hidden rounded-xl">
+                    <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/70">
+                      <span class="flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="ml-0.5 h-5 w-5"
+                          aria-hidden="true"
+                        >
+                          <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.1-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
+                        </svg>
+                      </span>
+                      <span class="text-xs tracking-wide text-white/60">
+                        Video placeholder
+                      </span>
+                    </div>
+                    <div class="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-black/55 px-3 py-2">
+                      <span class="h-2 w-2 rounded-full bg-white/80"></span>
+                      <span class="h-1 flex-1 rounded-full bg-white/25">
+                        <span class="block h-1 w-1/5 rounded-full bg-white/80"></span>
+                      </span>
+                      <span class="text-[10px] text-white/70">0:00</span>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  const activate = (root: HTMLElement, taskId: string) => {
+    root.querySelectorAll<HTMLButtonElement>("[data-task-btn]").forEach((btn) => {
+      btn.setAttribute(
+        "aria-selected",
+        btn.dataset.taskBtn === taskId ? "true" : "false",
+      );
+    });
+
+    root.querySelectorAll<HTMLElement>("[data-task-panel]").forEach((panel) => {
+      const active = panel.dataset.taskPanel === taskId;
+      panel.classList.toggle("hidden", !active);
+      panel.classList.toggle("block", active);
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>(".experiment-demos").forEach((root) => {
+    root.querySelectorAll<HTMLButtonElement>("[data-task-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const taskId = btn.dataset.taskBtn;
+        if (taskId) activate(root, taskId);
+      });
+    });
+  });
+</script>
+
+<style>
+  .video-shell {
+    background:
+      radial-gradient(circle at 30% 20%, rgb(59 130 246 / 0.22), transparent 28%),
+      linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  }
+</style>

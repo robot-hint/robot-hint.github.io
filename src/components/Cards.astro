@@ -1,0 +1,16 @@
+---
+// Responsive grid of highlight cards. Defaults to 3 columns on larger screens.
+interface Props {
+  columns?: number;
+}
+const { columns = 3 } = Astro.props;
+const cols: Record<number, string> = {
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-3",
+  4: "sm:grid-cols-2 lg:grid-cols-4",
+};
+---
+
+<div class={`not-prose my-8 grid grid-cols-1 gap-4 ${cols[columns] ?? cols[3]}`}>
+  <slot />
+</div>

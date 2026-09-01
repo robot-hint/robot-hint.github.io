@@ -1,0 +1,108 @@
+---
+import blackMug from "../assets/video/black_mug.mp4";
+import bottleToBowl from "../assets/video/bottle_to_bowl.mp4";
+import bottleToMug from "../assets/video/bottle_to_mug.mp4";
+import bottleToMug2 from "../assets/video/bottle_to_mug2.mp4";
+import closeLaptop from "../assets/video/close_laptop.mp4";
+import closeLaptop2 from "../assets/video/close_laptop2.mp4";
+import mugToBottle from "../assets/video/mug_to_bottle.mp4";
+import openLaptop1 from "../assets/video/open_laptop1.mp4";
+import openLaptop2 from "../assets/video/open_laptop2.mp4";
+import yellowMug from "../assets/video/yellow_mug.mp4";
+
+const groups = [
+  {
+    id: "rigid-objects",
+    title: "Rigid objects",
+    description: "Tasks: mug pick-and-place and cross-container pouring.",
+    videos: [
+      { title: "Black-mug pick-and-place", src: blackMug },
+      { title: "Yellow-mug pick-and-place", src: yellowMug },
+      { title: "Bottle-to-bowl pouring", src: bottleToBowl },
+      { title: "Bottle-to-mug pouring", src: bottleToMug },
+      {
+        title: "Bottle-to-mug pouring · different height",
+        src: bottleToMug2,
+      },
+      { title: "Mug-to-bottle pouring", src: mugToBottle },
+    ],
+  },
+  {
+    id: "articulated-objects",
+    title: "Articulated objects",
+    description: "Tasks: laptop opening and closing.",
+    videos: [
+      { title: "Laptop closing · sequence 1", src: closeLaptop },
+      { title: "Laptop closing · sequence 2", src: closeLaptop2 },
+      { title: "Laptop opening · sequence 1", src: openLaptop1 },
+      { title: "Laptop opening · sequence 2", src: openLaptop2 },
+    ],
+  },
+];
+---
+
+<div class="not-prose my-10 space-y-12">
+  {
+    groups.map((group) => (
+      <section aria-labelledby={group.id}>
+        <div class="mb-5 border-l-4 border-blue-600 pl-4 dark:border-blue-400">
+          <h3
+            id={group.id}
+            class="m-0 text-xl font-semibold text-zinc-900 dark:text-zinc-100"
+          >
+            {group.title}
+          </h3>
+          <p class="mt-1 mb-0 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+            {group.description}
+          </p>
+        </div>
+
+        <div class="grid gap-5 sm:grid-cols-2">
+          {group.videos.map((video) => (
+            <figure class="m-0 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/60">
+              <video
+                class="experiment-video aspect-video w-full bg-black object-contain"
+                src={video.src}
+                aria-label={`${group.title}: ${video.title}`}
+                controls
+                loop
+                muted
+                playsinline
+                preload="metadata"
+              />
+              <figcaption class="px-4 py-3 text-sm font-medium text-zinc-700 dark:text-zinc-200">
+                {video.title}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+</div>
+
+<script>
+  const videos =
+    document.querySelectorAll<HTMLVideoElement>(".experiment-video");
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (!reduceMotion && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const video = entry.target as HTMLVideoElement;
+          if (entry.isIntersecting) {
+            void video.play().catch(() => undefined);
+          } else {
+            video.pause();
+          }
+        }
+      },
+      { threshold: 0.35 },
+    );
+
+    videos.forEach((video) => observer.observe(video));
+  }
+</script>

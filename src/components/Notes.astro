@@ -1,0 +1,45 @@
+---
+import type { Note } from "../types/types";
+
+interface Props {
+  notes: Note[];
+}
+
+const { notes } = Astro.props;
+
+// Institutions are tagged with numeric symbols (1, 2, 3 …); author notes
+// (e.g. *, †) are rendered on their own line below.
+const institutions = notes.filter((note) => /^\d+$/.test(note.symbol));
+const authorNotes = notes.filter((note) => !/^\d+$/.test(note.symbol));
+---
+
+<div class="flex flex-col items-center gap-1">
+  {
+    institutions.length > 0 && (
+      <div class="text-center text-lg">
+        {
+          // prettier-ignore
+          institutions.map((note, index, array) =>
+            <span>
+              <sup>{note.symbol}</sup>{note.text}{index < array.length - 1 ? "," : ""}
+            </span>
+          )
+        }
+      </div>
+    )
+  }
+  {
+    authorNotes.length > 0 && (
+      <div class="text-center text-sm text-zinc-500 dark:text-zinc-400">
+        {
+          // prettier-ignore
+          authorNotes.map((note, index, array) =>
+            <span>
+              <sup>{note.symbol}</sup>{note.text}{index < array.length - 1 ? "," : ""}
+            </span>
+          )
+        }
+      </div>
+    )
+  }
+</div>

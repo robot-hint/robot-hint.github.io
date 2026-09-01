@@ -1,0 +1,207 @@
+---
+title: "HINT: Human-Intent Inception for Long-Horizon Robot Manipulation"
+authors:
+  - name: Mingyu Mei
+    notes: ["1"]
+  - name: Haojie Xu
+    notes: ["1"]
+  - name: Shihao Jin
+    notes: ["1"]
+  - name: Zibo Dai
+    notes: ["1"]
+  - name: Qihao Cheng
+    notes: ["1"]
+  - name: Zhengrui Lv
+    notes: ["1"]
+  - name: Hongjie Fang
+    notes: ["2"]
+  - name: Shirun Tang
+    notes: ["3"]
+  - name: Guang Chen
+    notes: ["1", "4"]
+  - name: Xinyue Zhao
+    notes: ["1"]
+  - name: Huiliang Shen
+    notes: ["1"]
+  - name: Zaixing He
+    notes: ["1", "†"]
+notes:
+  - symbol: "1"
+    text: Zhejiang University
+  - symbol: "2"
+    text: Shanghai Jiao Tong University
+  - symbol: "3"
+    text: Noematrix
+  - symbol: "4"
+    text: EndlessAI
+  - symbol: "†"
+    text: "Corresponding author"
+links:
+  - name: GitHub
+    url: "https://github.com/robot-hint/robot-hint.github.io"
+    icon: ri:github-fill
+
+theme: device
+favicon: favicon.svg
+
+description: "HINT converts sparse language intent into continuous, target-specific visual guidance for long-horizon robot manipulation — without adding trainable parameters to the foundation action policy."
+thumbnail: teaser.jpeg
+---
+
+import Figure from "./components/Figure.astro";
+import Picture from "./components/Picture.astro";
+import Table from "./components/Table.astro";
+import Abstract from "./components/Abstract.astro";
+import OverviewVideo from "./components/OverviewVideo.astro";
+import ExperimentDemos from "./components/ExperimentDemos.astro";
+
+import teaser from "./assets/teaser.jpeg";
+import framework from "./assets/framework.jpeg";
+import tasks from "./assets/task.jpeg";
+import oodExperiment from "./assets/ood_task.jpeg";
+
+## Overview
+
+<Abstract>
+
+Humans can perform complex manipulations from a simple overall instruction while continuously adapting to evolving visual observations. Current vision-language-action (VLA) models struggle under dense, evolving visual inputs and sparse language guidance: visual correlations can dominate semantic intent, so actions follow visual shortcuts rather than human goals. We present **HINT** (**H**uman-**INT**ent **IN**cep**T**ion), an agentic framework inspired by human manipulation: semantic intent changes sparsely at manipulation-pattern transitions, whereas continuous control depends on the evolving object-hand relationship. HINT invokes semantic reasoning only at those transitions to resolve the current subtask and target, then maintains this commitment through multi-view grounding and visual tracking. Two visual interfaces — image-space highlighting and attention-prior injection — communicate the tracked intent to the action policy without adding trainable parameters to the foundation action model. Across three long-horizon tasks and out-of-distribution variants, HINT improves intent understanding, task progress, and end-to-end success on two foundation policies while preserving low-latency control.
+
+</Abstract>
+
+<OverviewVideo />
+
+<Figure fullWidth>
+  <Picture slot="figure" src={teaser} alt="Motivation and overview of HINT." priority />
+  <Fragment slot="caption">**HINT** turns sparse language intent into continuous visual guidance. **(a)** Humans identify, track, and attend to the intended target. **(b)** HINT reasons at pattern transitions, tracks the target, and injects spatial intent into the action policy. **(c)** Evaluation covers unseen objects, layouts, colors, and instructions.</Fragment>
+</Figure>
+
+## Method
+
+<Figure fullWidth>
+  <Picture slot="figure" src={framework} alt="System overview of HINT." />
+  <Fragment slot="caption">**System overview.** **(1)** A pattern router selects views and the next semantic-update time. **(2)** At an update, HINT resolves and grounds the active target, then tracks it. **(3)** Intent is injected via pixel highlighting and a token-level attention prior.</Fragment>
+</Figure>
+
+HINT separates *what* to act on from *how* to act: it maintains human intent, while the pretrained action policy retains responsibility for motor execution.
+
+- **Which & when.** Pattern-aware perception scheduling uses the current manipulation pattern to determine which view to prioritize and when semantic perception should be updated. Semantic reasoning is invoked only at pattern transitions, coupling sparse intent updates with continuous visuomotor control.
+- **What & where.** High-level semantic intent changes sparsely, whereas low-level visual attention evolves continuously. Pattern-triggered reasoning establishes a semantic commitment when the manipulation context changes; goal-consistent tracking then maintains the spatial realization of the committed target.
+- **How.** View-routed semantic intent injection decouples semantic reasoning from action generation. Complementary image-level highlighting and token-level attention bias communicate the tracked target to the policy without adding trainable parameters to the foundation action model.
+
+## Experiments
+
+We evaluate on dual-arm PiPER robots with one global and two wrist cameras, using **fruit-vegetable sorting**, **word spelling**, and **peg-in-hole insertion**. HINT is a plug-and-play interface on Wall-OSS-0.5 and $\pi_{0.5}$, with no extra trainable parameters in the action backbone.
+
+Averaged over six task–setting pairs, HINT raises Intention Score / Subtask SR / Full SR by **+32.9 / +29.0 / +18.6** points on Wall-OSS-0.5 and **+50.2 / +41.1 / +41.4** points on $\pi_{0.5}$.
+
+<Figure fullWidth>
+  <Picture slot="figure" src={tasks} alt="Evaluation tasks and their manipulation-pattern decomposition." />
+  <Fragment slot="caption">**Tasks.** Sorting and spelling chain pick-and-place subtasks (free move → pre-contact → transport). Peg-in-hole further requires dexterous contact.</Fragment>
+</Figure>
+
+### In-distribution
+
+<Table>
+  <thead>
+    <tr>
+      <th rowspan="2">Method</th>
+      <th colspan="3">Fruit-Vegetable Sorting</th>
+      <th colspan="3">Word Spelling</th>
+      <th colspan="3">Peg-in-Hole Insertion</th>
+    </tr>
+    <tr>
+      <th>IS</th><th>Sub. SR</th><th>Full SR</th>
+      <th>IS</th><th>Sub. SR</th><th>Full SR</th>
+      <th>IS</th><th>Sub. SR</th><th>Full SR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Wall-OSS-0.5</td>
+      <td>53.1</td><td>53.1</td><td>0.0</td>
+      <td>44.7</td><td>36.2</td><td>13.3</td>
+      <td>65.0</td><td>25.0</td><td>5.0</td>
+    </tr>
+    <tr>
+      <td>π<sub>0.5</sub></td>
+      <td>52.2</td><td>52.2</td><td>10.0</td>
+      <td>44.7</td><td>42.6</td><td>13.3</td>
+      <td>35.0</td><td>27.5</td><td>5.0</td>
+    </tr>
+    <tr>
+      <td>Wall-OSS-0.5 + HINT</td>
+      <td>85.8</td><td>85.8</td><td>40.0</td>
+      <td>83.0</td><td>80.9</td><td>40.0</td>
+      <td>86.7</td><td>47.5</td><td>10.0</td>
+    </tr>
+    <tr>
+      <td>π<sub>0.5</sub> + HINT</td>
+      <td><strong>91.2</strong></td><td><strong>91.2</strong></td><td><strong>60.0</strong></td>
+      <td><strong>97.9</strong></td><td><strong>95.7</strong></td><td><strong>86.7</strong></td>
+      <td><strong>100.0</strong></td><td><strong>67.5</strong></td><td><strong>40.0</strong></td>
+    </tr>
+  </tbody>
+</Table>
+
+<ExperimentDemos setting="id" />
+
+### Out-of-distribution
+
+<Figure>
+  <Picture slot="figure" src={oodExperiment} alt="Semantic-compositional OOD configurations." />
+  <Fragment slot="caption">**OOD settings.** Unseen objects, attributes, layouts, goals, and instructions; required motor primitives stay familiar.</Fragment>
+</Figure>
+
+<Table>
+  <thead>
+    <tr>
+      <th rowspan="2">Method</th>
+      <th colspan="3">Sorting OOD</th>
+      <th colspan="3">Spelling OOD</th>
+      <th colspan="3">Insertion OOD</th>
+    </tr>
+    <tr>
+      <th>IS</th><th>Sub. SR</th><th>Full SR</th>
+      <th>IS</th><th>Sub. SR</th><th>Full SR</th>
+      <th>IS</th><th>Sub. SR</th><th>Full SR</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Wall-OSS-0.5</td>
+      <td>47.8</td><td>37.0</td><td>0.0</td>
+      <td>36.4</td><td>31.8</td><td>0.0</td>
+      <td>50.0</td><td>25.0</td><td>10.0</td>
+    </tr>
+    <tr>
+      <td>π<sub>0.5</sub></td>
+      <td>56.5</td><td>52.2</td><td>0.0</td>
+      <td>40.9</td><td>36.4</td><td>0.0</td>
+      <td>26.7</td><td>20.0</td><td>0.0</td>
+    </tr>
+    <tr>
+      <td>Wall-OSS-0.5 + HINT</td>
+      <td>73.9</td><td>65.2</td><td>20.0</td>
+      <td>81.8</td><td>72.7</td><td>20.0</td>
+      <td>83.3</td><td>30.0</td><td>10.0</td>
+    </tr>
+    <tr>
+      <td>π<sub>0.5</sub> + HINT</td>
+      <td><strong>82.6</strong></td><td><strong>80.4</strong></td><td><strong>30.0</strong></td>
+      <td><strong>95.5</strong></td><td><strong>87.5</strong></td><td><strong>30.0</strong></td>
+      <td><strong>90.0</strong></td><td><strong>55.0</strong></td><td><strong>30.0</strong></td>
+    </tr>
+  </tbody>
+</Table>
+
+<ExperimentDemos setting="ood" />
+
+## BibTeX
+
+```bibtex
+@article{mei2026hint,
+  title={HINT: Human-Intent Inception for Long-Horizon Robot Manipulation},
+  author={Mei, Mingyu and Xu, Haojie and Jin, Shihao and Dai, Zibo and Cheng, Qihao and Lv, Zhengrui and Fang, Hongjie and Tang, Shirun and Chen, Guang and Zhao, Xinyue and Shen, Huiliang and He, Zaixing},
+  year={2026}
+}
+```
