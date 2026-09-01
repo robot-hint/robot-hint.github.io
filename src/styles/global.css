@@ -77,7 +77,7 @@ main > h2:first-child {
 }
 
 .experiment-panel {
-  --experiment-max-width: 84rem;
+  --experiment-max-width: calc(var(--maximum-text-width) * 1.05);
   width: min(
     var(--experiment-max-width),
     calc(100cqw - 2 * var(--minimum-inline-margin))

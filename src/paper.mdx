@@ -121,9 +121,9 @@ We evaluate on dual-arm PiPER robots with one global and two wrist cameras, usin
 
 <ResultCharts setting="ood" />
 
-## Highlighting
+## Highlighting Inputs
 
-HINT overlays the tracked target on the global and wrist views so the action policy sees *what* to attend to throughout execution.
+These videos show **policy-facing observations** after pixel-level visual semantic highlighting. Training observations are rendered with the same overlay used at deployment. Each manipulation pattern determines a unique **routed view**—global or wrist—for highlighting; all other views remain unmodified.
 
 <HighlightingDemos />
 
