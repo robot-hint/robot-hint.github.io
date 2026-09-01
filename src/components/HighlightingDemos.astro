@@ -1,0 +1,294 @@
+---
+import sorting1 from "../assets/video/highlighting/sorting-1.mp4";
+import sorting2 from "../assets/video/highlighting/sorting-2.mp4";
+import spelling1 from "../assets/video/highlighting/spelling-1.mp4";
+import spelling2 from "../assets/video/highlighting/spelling-2.mp4";
+import insertion1 from "../assets/video/highlighting/insertion-1.mp4";
+import insertion2 from "../assets/video/highlighting/insertion-2.mp4";
+
+interface PromptPart {
+  text: string;
+  tone?: "pink" | "blue" | "green" | "orange" | "amber";
+}
+
+interface Demo {
+  src: string;
+  label: string;
+  prompt: PromptPart[];
+}
+
+interface Task {
+  id: string;
+  label: string;
+  title: string;
+  demos: Demo[];
+}
+
+const toneClass: Record<NonNullable<PromptPart["tone"]>, string> = {
+  pink: "rounded px-1 font-semibold bg-pink-100 text-pink-700 dark:bg-pink-950/80 dark:text-pink-300",
+  blue: "rounded px-1 font-semibold bg-blue-100 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300",
+  green:
+    "rounded px-1 font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300",
+  orange:
+    "rounded px-1 font-semibold bg-orange-100 text-orange-700 dark:bg-orange-950/80 dark:text-orange-300",
+  amber:
+    "rounded px-1 font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300",
+};
+
+const tasks: Task[] = [
+  {
+    id: "sorting",
+    label: "Sorting",
+    title: "Fruit-Vegetable Sorting",
+    demos: [
+      {
+        src: sorting1,
+        label: "Demo 1",
+        prompt: [
+          { text: "Put " },
+          { text: "vegetables", tone: "green" },
+          { text: " in the " },
+          { text: "pink basket", tone: "pink" },
+          { text: " and " },
+          { text: "fruits", tone: "orange" },
+          { text: " in the " },
+          { text: "blue basket", tone: "blue" },
+          { text: "." },
+        ],
+      },
+      {
+        src: sorting2,
+        label: "Demo 2",
+        prompt: [
+          { text: "Put " },
+          { text: "fruits", tone: "orange" },
+          { text: " in the " },
+          { text: "pink basket", tone: "pink" },
+          { text: " and " },
+          { text: "vegetables", tone: "green" },
+          { text: " in the " },
+          { text: "blue basket", tone: "blue" },
+          { text: "." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "spelling",
+    label: "Spelling",
+    title: "Word Spelling",
+    demos: [
+      {
+        src: spelling1,
+        label: "Demo 1",
+        prompt: [
+          {
+            text: "Identify the word from the reference image, then spell it with letter blocks on the board.",
+          },
+        ],
+      },
+      {
+        src: spelling2,
+        label: "Demo 2",
+        prompt: [
+          {
+            text: "Identify the word from the reference image, then spell it with letter blocks on the board.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "insertion",
+    label: "Insertion",
+    title: "Peg-in-Hole Insertion",
+    demos: [
+      {
+        src: insertion1,
+        label: "Demo 1",
+        prompt: [
+          { text: "Pick up the " },
+          { text: "green template", tone: "green" },
+          { text: ", place it in the black tray, then insert the " },
+          { text: "L-shaped peg", tone: "amber" },
+          { text: "." },
+        ],
+      },
+      {
+        src: insertion2,
+        label: "Demo 2",
+        prompt: [
+          { text: "Pick up the " },
+          { text: "blue template", tone: "blue" },
+          { text: ", place it in the black tray, then insert the " },
+          { text: "square peg", tone: "orange" },
+          { text: "." },
+        ],
+      },
+    ],
+  },
+];
+---
+
+<div class="highlighting-demos experiment-panel not-prose">
+  <div
+    class="border-b border-zinc-100 bg-gradient-to-br from-blue-50/80 via-white to-zinc-50 px-5 py-5 sm:px-8 sm:py-6 dark:border-zinc-800 dark:from-blue-950/30 dark:via-zinc-950 dark:to-zinc-950"
+  >
+    <div
+      class="flex flex-wrap justify-center gap-2"
+      role="tablist"
+      aria-label="Highlighting demonstration tasks"
+    >
+      {
+        tasks.map((task, index) => (
+          <button
+            type="button"
+            data-hl-btn={task.id}
+            aria-selected={index === 0 ? "true" : "false"}
+            class="rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-600 shadow-sm transition-all hover:border-blue-300 hover:text-blue-700 aria-selected:border-transparent aria-selected:bg-blue-600 aria-selected:text-white aria-selected:shadow-md aria-selected:hover:bg-blue-700 aria-selected:hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-blue-500 dark:aria-selected:bg-blue-500 dark:aria-selected:text-zinc-950"
+          >
+            {task.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  {
+    tasks.map((task, index) => (
+      <div
+        data-hl-panel={task.id}
+        class:list={[index === 0 ? "block" : "hidden"]}
+        role="tabpanel"
+      >
+        <div class="px-3 pt-4 pb-4 sm:px-4 sm:pt-5 sm:pb-5">
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-2 px-1">
+            <p class="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+              {task.title}
+            </p>
+            <span class="inline-flex rounded-full bg-emerald-600 px-2.5 py-1 text-[10px] font-semibold tracking-[0.14em] text-white uppercase">
+              Highlighting
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            {task.demos.map((demo) => (
+              <article class="overflow-hidden rounded-2xl border border-emerald-300 bg-white shadow-[0_12px_32px_-20px_rgba(16,185,129,0.55)] dark:border-emerald-700 dark:bg-zinc-950">
+                <p class="m-0 border-b border-zinc-100 px-3 py-2.5 text-sm text-zinc-700 dark:border-zinc-800 dark:text-zinc-200">
+                  <span class="mr-2 font-semibold text-emerald-700 dark:text-emerald-300">
+                    {demo.label}
+                  </span>
+                  {demo.prompt.map((part) =>
+                    part.tone ? (
+                      <span class={toneClass[part.tone]}>{part.text}</span>
+                    ) : (
+                      part.text
+                    ),
+                  )}
+                </p>
+                <div class="relative bg-black">
+                  <div class="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 p-3">
+                    <span class="rounded-full bg-emerald-500/90 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                      HINT
+                    </span>
+                    <span class="rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm">
+                      {demo.label}
+                    </span>
+                  </div>
+                  <video
+                    class="highlighting-video w-full bg-black object-contain"
+                    src={demo.src}
+                    aria-label={`${task.title}: ${demo.prompt.map((part) => part.text).join("")}`}
+                    controls
+                    loop
+                    muted
+                    playsinline
+                    autoplay
+                    preload="metadata"
+                  />
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  const pauseVideos = (root: HTMLElement) => {
+    root.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+      video.pause();
+    });
+  };
+
+  const playVisible = (root: HTMLElement) => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) return;
+
+    root.querySelectorAll<HTMLElement>("[data-hl-panel]").forEach((panel) => {
+      const active = !panel.classList.contains("hidden");
+      panel.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+        if (active) {
+          void video.play().catch(() => undefined);
+        } else {
+          video.pause();
+        }
+      });
+    });
+  };
+
+  const activate = (root: HTMLElement, taskId: string) => {
+    root.querySelectorAll<HTMLButtonElement>("[data-hl-btn]").forEach((btn) => {
+      btn.setAttribute(
+        "aria-selected",
+        btn.dataset.hlBtn === taskId ? "true" : "false",
+      );
+    });
+
+    root.querySelectorAll<HTMLElement>("[data-hl-panel]").forEach((panel) => {
+      const active = panel.dataset.hlPanel === taskId;
+      panel.classList.toggle("hidden", !active);
+      panel.classList.toggle("block", active);
+    });
+
+    pauseVideos(root);
+    playVisible(root);
+  };
+
+  document.querySelectorAll<HTMLElement>(".highlighting-demos").forEach((root) => {
+    root.querySelectorAll<HTMLButtonElement>("[data-hl-btn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const taskId = btn.dataset.hlBtn;
+        if (taskId) activate(root, taskId);
+      });
+    });
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) {
+      root.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+        video.removeAttribute("autoplay");
+        video.pause();
+      });
+      return;
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) playVisible(root);
+            else pauseVideos(root);
+          }
+        },
+        { threshold: 0.2 },
+      );
+      observer.observe(root);
+    }
+  });
+</script>

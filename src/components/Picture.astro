@@ -6,29 +6,16 @@ interface Props {
   alt: string;
   priority?: boolean;
   invertInDarkMode?: boolean;
-  fill?: boolean;
 }
 
-const {
-  src,
-  alt,
-  priority = false,
-  invertInDarkMode = false,
-  fill = false,
-} = Astro.props;
+const { src, alt, priority = false, invertInDarkMode = false } = Astro.props;
 ---
 
 <AstroPicture
-  class:list={[
-    "max-w-full",
-    fill
-      ? "block h-auto w-full"
-      : "mx-auto max-h-[calc(100svh-3rem)] w-min",
-    invertInDarkMode && "dark:invert",
-  ]}
+  class={`mx-auto max-h-[calc(100svh-3rem)] w-min max-w-full ${invertInDarkMode ? "dark:invert" : ""}`}
   src={src}
   alt={alt}
-  layout={fill ? "full-width" : "constrained"}
+  layout="constrained"
   formats={["avif"]}
   priority={priority}
   fit="contain"

@@ -1,0 +1,280 @@
+---
+interface Method {
+  id: string;
+  label: string;
+  axis: string;
+  ours?: boolean;
+}
+
+interface TaskChart {
+  id: string;
+  title: string;
+  values: {
+    is: number[];
+    sub: number[];
+    full: number[];
+  };
+}
+
+interface Props {
+  setting: "id" | "ood";
+}
+
+const { setting } = Astro.props;
+
+const methods: Method[] = [
+  { id: "wall", label: "Wall-OSS-0.5", axis: "Wall-OSS-0.5" },
+  { id: "pi", label: "π₀.₅", axis: "π₀.₅" },
+  { id: "wall-hint", label: "Wall-OSS-0.5 + HINT", axis: "Wall + HINT" },
+  { id: "pi-hint", label: "π₀.₅ + HINT", axis: "π₀.₅ + HINT", ours: true },
+];
+
+const idTasks: TaskChart[] = [
+  {
+    id: "sorting",
+    title: "Fruit-Vegetable Sorting",
+    values: {
+      is: [53.1, 52.2, 85.8, 91.2],
+      sub: [53.1, 52.2, 85.8, 91.2],
+      full: [0.0, 10.0, 40.0, 60.0],
+    },
+  },
+  {
+    id: "spelling",
+    title: "Word Spelling",
+    values: {
+      is: [44.7, 44.7, 83.0, 97.9],
+      sub: [36.2, 42.6, 80.9, 95.7],
+      full: [13.3, 13.3, 40.0, 86.7],
+    },
+  },
+  {
+    id: "insertion",
+    title: "Peg-in-Hole Insertion",
+    values: {
+      is: [65.0, 35.0, 86.7, 100.0],
+      sub: [25.0, 27.5, 47.5, 67.5],
+      full: [5.0, 5.0, 10.0, 40.0],
+    },
+  },
+];
+
+const oodTasks: TaskChart[] = [
+  {
+    id: "sorting",
+    title: "Fruit-Vegetable Sorting",
+    values: {
+      is: [47.8, 56.5, 73.9, 82.6],
+      sub: [37.0, 52.2, 65.2, 80.4],
+      full: [0.0, 0.0, 20.0, 30.0],
+    },
+  },
+  {
+    id: "spelling",
+    title: "Word Spelling",
+    values: {
+      is: [36.4, 40.9, 81.8, 95.5],
+      sub: [31.8, 36.4, 72.7, 87.5],
+      full: [0.0, 0.0, 20.0, 30.0],
+    },
+  },
+  {
+    id: "insertion",
+    title: "Peg-in-Hole Insertion",
+    values: {
+      is: [50.0, 26.7, 83.3, 90.0],
+      sub: [25.0, 20.0, 30.0, 55.0],
+      full: [10.0, 0.0, 10.0, 30.0],
+    },
+  },
+];
+
+const tasks = setting === "id" ? idTasks : oodTasks;
+const ticks = [100, 75, 50, 25, 0];
+const metricOptions = [
+  { key: "is", label: "Intention Score (IS)" },
+  { key: "sub", label: "Subtask SR" },
+  { key: "full", label: "Full-Task SR" },
+];
+---
+
+<div
+  class="result-charts not-prose mx-auto my-10 w-full overflow-hidden rounded-2xl border border-zinc-200/90 bg-gradient-to-br from-zinc-50 via-white to-blue-50/60 p-3 shadow-[0_12px_40px_-24px_rgba(15,23,42,0.35)] sm:p-5 dark:border-zinc-700/80 dark:from-zinc-900 dark:via-zinc-900 dark:to-blue-950/30"
+  data-setting={setting}
+>
+  <div class="rounded-xl border border-zinc-200/80 bg-white px-3 py-4 sm:px-5 sm:py-5 dark:border-zinc-700 dark:bg-zinc-950">
+    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <label class="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
+        Metric:
+        <select
+          data-metric
+          class="rounded-lg border-zinc-200 bg-white py-1.5 pr-8 pl-2.5 text-sm font-medium text-zinc-800 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+        >
+          {
+            metricOptions.map((option) => (
+              <option value={option.key}>{option.label}</option>
+            ))
+          }
+        </select>
+      </label>
+      <div class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-zinc-600 dark:text-zinc-300">
+        {
+          methods.map((method) => (
+            <span class="inline-flex items-center gap-1.5">
+              <span
+                class:list={[
+                  "inline-block h-2.5 w-2.5 rounded-sm",
+                  method.id === "wall" && "bg-[#b4b4b4]",
+                  method.id === "pi" && "bg-[#94a3b8]",
+                  method.id === "wall-hint" && "bg-[#3b82f6]/80",
+                  method.id === "pi-hint" && "bg-[#1e3a8a]/90",
+                ]}
+              />
+              {method.label}
+            </span>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-5">
+      {
+        tasks.map((task) => (
+          <div data-chart data-task-title={task.title}>
+            <h4
+              data-chart-title
+              class="mb-3 text-center text-[15px] font-semibold tracking-tight text-zinc-800 dark:text-zinc-100"
+            >
+              {task.title}: IS
+            </h4>
+            <div class="flex pt-4">
+              <div class="flex h-52 w-8 shrink-0 flex-col justify-between py-0 pr-1 text-right text-[11px] text-zinc-500">
+                {ticks.map((tick) => (
+                  <span>{tick}%</span>
+                ))}
+              </div>
+              <div class="relative min-w-0 flex-1">
+                <div class="pointer-events-none absolute inset-0 flex h-52 flex-col justify-between">
+                  {ticks.map(() => (
+                    <div class="h-px w-full bg-zinc-200/90 dark:bg-zinc-800" />
+                  ))}
+                </div>
+                <div class="relative flex h-52 items-end justify-around px-1">
+                  {methods.map((method, index) => {
+                    const value = task.values.is[index];
+                    return (
+                      <div class="flex h-full w-full max-w-[3.25rem] flex-col items-center">
+                        <div class="relative w-full flex-1">
+                          <div
+                            data-bar
+                            data-is={task.values.is[index]}
+                            data-sub={task.values.sub[index]}
+                            data-full={task.values.full[index]}
+                            class:list={[
+                              "result-bar absolute bottom-0 left-1/2 w-[70%] max-w-[2.35rem] -translate-x-1/2 rounded-t-[7px]",
+                              method.id === "wall" && "bg-[#b4b4b4]",
+                              method.id === "pi" && "bg-[#94a3b8]",
+                              method.id === "wall-hint" && "bg-[#3b82f6]/80",
+                              method.id === "pi-hint" &&
+                                "bg-[#1e3a8a]/90 ring-1 ring-black/20",
+                            ]}
+                            style={`height: ${value}%;`}
+                            title={`${method.label}: ${value.toFixed(1)}`}
+                          >
+                            <span
+                              data-value
+                              class="absolute -top-4 left-1/2 -translate-x-1/2 text-[10px] font-medium whitespace-nowrap text-zinc-700 dark:text-zinc-200"
+                            >
+                              {value.toFixed(1)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div class="mt-2 flex justify-around px-1">
+                  {methods.map((method) => (
+                    <span
+                      class:list={[
+                        "w-full max-w-[3.25rem] text-center text-[10px] leading-tight text-zinc-600 dark:text-zinc-400",
+                        method.ours && "font-semibold text-zinc-800 dark:text-zinc-200",
+                      ]}
+                    >
+                      {method.axis}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script>
+  const metricLabels: Record<string, string> = {
+    is: "IS",
+    sub: "Sub. SR",
+    full: "Full SR",
+  };
+
+  const applyMetric = (root: HTMLElement, metric: string) => {
+    root.querySelectorAll<HTMLElement>("[data-chart]").forEach((chart) => {
+      const title = chart.querySelector("[data-chart-title]");
+      if (title) {
+        title.textContent = `${chart.dataset.taskTitle}: ${metricLabels[metric] ?? "IS"}`;
+      }
+
+      chart.querySelectorAll<HTMLElement>("[data-bar]").forEach((bar) => {
+        const raw = bar.dataset[metric] ?? "0";
+        const value = Number(raw);
+        bar.style.height = `${Math.max(0, value)}%`;
+        const label = bar.querySelector("[data-value]");
+        if (label) label.textContent = value.toFixed(1);
+      });
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>(".result-charts").forEach((root) => {
+    const select = root.querySelector<HTMLSelectElement>("[data-metric]");
+    select?.addEventListener("change", () => {
+      applyMetric(root, select.value);
+    });
+
+    const reveal = () => root.classList.add("is-inview");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              reveal();
+              observer.disconnect();
+              break;
+            }
+          }
+        },
+        { threshold: 0.2 },
+      );
+      observer.observe(root);
+    } else {
+      reveal();
+    }
+  });
+</script>
+
+<style>
+  .result-bar {
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition:
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.35s ease;
+  }
+
+  .result-charts.is-inview .result-bar {
+    transform: scaleY(1);
+  }
+</style>
