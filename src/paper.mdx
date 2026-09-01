@@ -55,6 +55,7 @@ import OverviewVideo from "./components/OverviewVideo.astro";
 import ExperimentDemos from "./components/ExperimentDemos.astro";
 import ResultCharts from "./components/ResultCharts.astro";
 import HighlightingDemos from "./components/HighlightingDemos.astro";
+import SmallCopy from "./components/SmallCopy.astro";
 
 import teaser from "./assets/teaser.jpeg";
 import framework from "./assets/framework.jpeg";
@@ -83,11 +84,15 @@ Humans can perform complex manipulations from a simple overall instruction while
   <Fragment slot="caption">**System overview.** **(1)** A pattern router selects views and the next semantic-update time. **(2)** At an update, HINT resolves and grounds the active target, then tracks it. **(3)** Intent is injected via pixel highlighting and a token-level attention prior.</Fragment>
 </Figure>
 
+<SmallCopy>
+
 HINT separates *what* to act on from *how* to act: it maintains human intent, while the pretrained action policy retains responsibility for motor execution.
 
 - **Which & when.** Pattern-aware perception scheduling uses the current manipulation pattern to determine which view to prioritize and when semantic perception should be updated. Semantic reasoning is invoked only at pattern transitions, coupling sparse intent updates with continuous visuomotor control.
 - **What & where.** High-level semantic intent changes sparsely, whereas low-level visual attention evolves continuously. Pattern-triggered reasoning establishes a semantic commitment when the manipulation context changes; goal-consistent tracking then maintains the spatial realization of the committed target.
 - **How.** View-routed semantic intent injection decouples semantic reasoning from action generation. Complementary image-level highlighting and token-level attention bias communicate the tracked target to the policy without adding trainable parameters to the foundation action model.
+
+</SmallCopy>
 
 ## Experiments
 
