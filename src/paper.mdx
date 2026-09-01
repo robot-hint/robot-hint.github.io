@@ -94,8 +94,8 @@ We evaluate on dual-arm PiPER robots with one global and two wrist cameras, usin
 
 Averaged over six task–setting pairs, HINT raises Intention Score / Subtask SR / Full SR by **+32.9 / +29.0 / +18.6** points on Wall-OSS-0.5 and **+50.2 / +41.1 / +41.4** points on $\pi_{0.5}$.
 
-<Figure fullWidth>
-  <Picture slot="figure" src={tasks} alt="Evaluation tasks and their manipulation-pattern decomposition." />
+<Figure panel scale={0.75}>
+  <Picture slot="figure" src={tasks} alt="Evaluation tasks and their manipulation-pattern decomposition." fill />
   <Fragment slot="caption">**Tasks.** Sorting and spelling chain pick-and-place subtasks (free move → pre-contact → transport). Peg-in-hole further requires dexterous contact.</Fragment>
 </Figure>
 
@@ -147,8 +147,8 @@ Averaged over six task–setting pairs, HINT raises Intention Score / Subtask SR
 
 ### Out-of-distribution
 
-<Figure>
-  <Picture slot="figure" src={oodExperiment} alt="Semantic-compositional OOD configurations." />
+<Figure panel scale={0.75}>
+  <Picture slot="figure" src={oodExperiment} alt="Semantic-compositional OOD configurations." fill />
   <Fragment slot="caption">**OOD settings.** Unseen objects, attributes, layouts, goals, and instructions; required motor primitives stay familiar.</Fragment>
 </Figure>
 

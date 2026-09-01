@@ -118,7 +118,7 @@ const rollouts = [
 ---
 
 <div
-  class="experiment-demos not-prose my-8 overflow-hidden rounded-[1.75rem] border border-zinc-200/90 bg-white shadow-[0_24px_60px_-36px_rgba(15,23,42,0.35)] dark:border-zinc-800 dark:bg-zinc-950"
+  class="experiment-demos experiment-panel not-prose"
   data-setting={setting}
 >
   <div
@@ -184,74 +184,54 @@ const rollouts = [
           })}
         </div>
 
-        <div class="border-t border-zinc-100 px-5 py-6 sm:px-8 sm:py-7 dark:border-zinc-800">
-          <div class="mb-5 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p class="m-0 text-[11px] font-semibold tracking-[0.2em] text-blue-600 uppercase dark:text-blue-300">
-                {task.title} rollouts
-              </p>
-              <h4 class="mt-1 mb-0 text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl dark:text-zinc-50">
+        <div class="border-t border-zinc-100 px-3 pt-4 pb-3 sm:px-4 sm:pt-5 sm:pb-4 dark:border-zinc-800">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
+            <p class="m-0 text-sm font-semibold text-zinc-800 dark:text-zinc-100">
+              {task.title}
+              <span class="ml-2 font-normal text-zinc-400">
                 {task.description}
-              </h4>
-            </div>
-            <p class="m-0 max-w-sm text-sm leading-relaxed text-zinc-500 lg:text-right">
-              Each row pairs the same rollout index so HINT and π<sub>0.5</sub>{" "}
-              can be compared directly.
+              </span>
             </p>
+            <span class="inline-flex rounded-full bg-blue-600 px-2.5 py-1 text-[10px] font-semibold tracking-[0.14em] text-white uppercase">
+              {settingKicker}
+            </span>
           </div>
 
-          <span class="mb-5 inline-flex rounded-full bg-blue-600 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-white uppercase">
-            {settingKicker}
-          </span>
-
-          <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-3 sm:grid-cols-2">
             {rollouts.map((item) => {
               const ours = item.method === "hint";
               return (
                 <article
                   class:list={[
-                    "overflow-hidden rounded-2xl border bg-white p-4 dark:bg-zinc-950",
+                    "overflow-hidden rounded-2xl border",
                     ours
                       ? "border-emerald-300 shadow-[0_12px_32px_-20px_rgba(16,185,129,0.55)] dark:border-emerald-700"
                       : "border-zinc-200 dark:border-zinc-800",
                   ]}
                 >
-                  <div class="mb-3 flex items-start justify-between gap-3">
-                    <div>
-                      <p
+                  <div class="video-shell relative aspect-video overflow-hidden bg-zinc-950">
+                    <div class="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 p-3">
+                      <span
                         class:list={[
-                          "m-0 text-base font-semibold",
+                          "rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur-sm",
                           ours
-                            ? "text-emerald-700 dark:text-emerald-300"
-                            : "text-zinc-900 dark:text-zinc-100",
+                            ? "bg-emerald-500/90 text-white"
+                            : "bg-black/55 text-white",
                         ]}
                       >
                         {item.name}
-                      </p>
-                      <p
-                        class:list={[
-                          "mt-1 mb-0 text-sm font-medium",
-                          ours
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : "text-zinc-400",
-                        ]}
-                      >
-                        Coming soon
-                      </p>
+                      </span>
+                      <span class="rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm">
+                        Rollout {item.trial}
+                      </span>
                     </div>
-                    <span class="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                      Rollout {item.trial}
-                    </span>
-                  </div>
-
-                  <div class="video-shell relative aspect-video overflow-hidden rounded-xl">
                     <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/70">
-                      <span class="flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm">
+                      <span class="flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           viewBox="0 0 24 24"
                           fill="currentColor"
-                          class="ml-0.5 h-5 w-5"
+                          class="ml-0.5 h-6 w-6"
                           aria-hidden="true"
                         >
                           <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.1-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />

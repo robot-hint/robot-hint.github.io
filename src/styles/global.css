@@ -72,6 +72,28 @@ main h2 {
   letter-spacing: -0.025em;
 }
 
+main > h2:first-child {
+  margin-top: 0.75rem;
+}
+
+.experiment-panel {
+  --experiment-max-width: 84rem;
+  width: min(
+    var(--experiment-max-width),
+    calc(100cqw - 2 * var(--minimum-inline-margin))
+  );
+  margin-inline: calc(
+    (
+        var(--actual-text-width) -
+          min(
+            var(--experiment-max-width),
+            calc(100cqw - 2 * var(--minimum-inline-margin))
+          )
+      ) / 2
+  );
+  @apply my-8 overflow-hidden rounded-[1.75rem] border border-zinc-200/90 bg-white shadow-[0_24px_60px_-36px_rgba(15,23,42,0.35)] dark:border-zinc-800 dark:bg-zinc-950;
+}
+
 main h2::after {
   position: absolute;
   bottom: 0;
