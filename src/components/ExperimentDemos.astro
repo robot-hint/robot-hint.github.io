@@ -228,7 +228,7 @@ const metricCards = [
     class="border-b border-zinc-100 bg-gradient-to-br from-blue-50/80 via-white to-zinc-50 px-5 py-5 sm:px-8 sm:py-6 dark:border-zinc-800 dark:from-blue-950/30 dark:via-zinc-950 dark:to-zinc-950"
   >
     <div
-      class="flex flex-wrap justify-center gap-2"
+      class="flex flex-wrap justify-center gap-4 sm:gap-6"
       role="tablist"
       aria-label={`${settingKicker} tasks`}
     >
@@ -238,9 +238,9 @@ const metricCards = [
             type="button"
             data-task-btn={task.id}
             aria-selected={index === 0 ? "true" : "false"}
-            class="rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-600 shadow-sm transition-all hover:border-blue-300 hover:text-blue-700 aria-selected:border-transparent aria-selected:bg-blue-600 aria-selected:text-white aria-selected:shadow-md aria-selected:hover:bg-blue-700 aria-selected:hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-blue-500 dark:aria-selected:bg-blue-500 dark:aria-selected:text-zinc-950"
+            class="rounded-full border border-zinc-200 bg-white px-6 py-2.5 text-sm font-semibold whitespace-nowrap text-zinc-600 shadow-sm transition-all hover:border-blue-300 hover:text-blue-700 aria-selected:border-transparent aria-selected:bg-blue-600 aria-selected:text-white aria-selected:shadow-md aria-selected:hover:bg-blue-700 aria-selected:hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-blue-500 dark:aria-selected:bg-blue-500 dark:aria-selected:text-zinc-950"
           >
-            {task.label}
+            {task.title}
           </button>
         ))
       }
