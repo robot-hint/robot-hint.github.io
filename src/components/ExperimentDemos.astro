@@ -1,8 +1,40 @@
 ---
+import idSortingPiRed from "../assets/video/experiments/id-sorting-pi-red.mp4";
+import idSortingHintRed from "../assets/video/experiments/id-sorting-hint-red.mp4";
+import idSortingPiBlue from "../assets/video/experiments/id-sorting-pi-blue.mp4";
+import idSortingHintBlue from "../assets/video/experiments/id-sorting-hint-blue.mp4";
+import oodSortingPiLeft from "../assets/video/experiments/ood-sorting-pi-left.mp4";
+import oodSortingHintLeft from "../assets/video/experiments/ood-sorting-hint-left.mp4";
+import oodSortingPiRight from "../assets/video/experiments/ood-sorting-pi-right.mp4";
+import oodSortingHintRight from "../assets/video/experiments/ood-sorting-hint-right.mp4";
+import idSpellingPiWolf from "../assets/video/experiments/id-spelling-pi-wolf.mp4";
+import idSpellingHintWolf from "../assets/video/experiments/id-spelling-hint-wolf.mp4";
+import idSpellingPiBox from "../assets/video/experiments/id-spelling-pi-box.mp4";
+import idSpellingHintBox from "../assets/video/experiments/id-spelling-hint-box.mp4";
+import oodSpellingPiApple from "../assets/video/experiments/ood-spelling-pi-apple.mp4";
+import oodSpellingHintApple from "../assets/video/experiments/ood-spelling-hint-apple.mp4";
+import oodSpellingPiRobot from "../assets/video/experiments/ood-spelling-pi-robot.mp4";
+import oodSpellingHintRobot from "../assets/video/experiments/ood-spelling-hint-robot.mp4";
+import idInsertionPiGreen from "../assets/video/experiments/id-insertion-pi-green-rectangle.mp4";
+import idInsertionHintGreen from "../assets/video/experiments/id-insertion-hint-green-rectangle.mp4";
+import idInsertionPiRedL from "../assets/video/experiments/id-insertion-pi-red-lshape.mp4";
+import idInsertionHintRedL from "../assets/video/experiments/id-insertion-hint-red-lshape.mp4";
+import oodInsertionPiMiddle from "../assets/video/experiments/ood-insertion-pi-middle-rectangle.mp4";
+import oodInsertionHintMiddle from "../assets/video/experiments/ood-insertion-hint-middle-rectangle.mp4";
+import oodInsertionPiCircle from "../assets/video/experiments/ood-insertion-pi-red-circle.mp4";
+import oodInsertionHintCircle from "../assets/video/experiments/ood-insertion-hint-red-circle.mp4";
+
 interface Metric {
   hint: number;
   pi: number;
   delta: number;
+}
+
+interface Rollout {
+  method: "pi" | "hint";
+  name: string;
+  variant: string;
+  src: string;
 }
 
 interface Task {
@@ -15,6 +47,7 @@ interface Task {
     sub: Metric;
     full: Metric;
   };
+  videos: Rollout[];
 }
 
 interface Props {
@@ -35,6 +68,12 @@ const idTasks: Task[] = [
       sub: { hint: 91.2, pi: 52.2, delta: 39.0 },
       full: { hint: 60.0, pi: 10.0, delta: 50.0 },
     },
+    videos: [
+      { method: "pi", name: "π₀.₅", variant: "Red basket", src: idSortingPiRed },
+      { method: "hint", name: "HINT", variant: "Red basket", src: idSortingHintRed },
+      { method: "pi", name: "π₀.₅", variant: "Blue basket", src: idSortingPiBlue },
+      { method: "hint", name: "HINT", variant: "Blue basket", src: idSortingHintBlue },
+    ],
   },
   {
     id: "spelling",
@@ -47,6 +86,12 @@ const idTasks: Task[] = [
       sub: { hint: 95.7, pi: 42.6, delta: 53.1 },
       full: { hint: 86.7, pi: 13.3, delta: 73.4 },
     },
+    videos: [
+      { method: "pi", name: "π₀.₅", variant: "WOLF", src: idSpellingPiWolf },
+      { method: "hint", name: "HINT", variant: "WOLF", src: idSpellingHintWolf },
+      { method: "pi", name: "π₀.₅", variant: "BOX", src: idSpellingPiBox },
+      { method: "hint", name: "HINT", variant: "BOX", src: idSpellingHintBox },
+    ],
   },
   {
     id: "insertion",
@@ -59,6 +104,32 @@ const idTasks: Task[] = [
       sub: { hint: 67.5, pi: 27.5, delta: 40.0 },
       full: { hint: 40.0, pi: 5.0, delta: 35.0 },
     },
+    videos: [
+      {
+        method: "pi",
+        name: "π₀.₅",
+        variant: "Green · rectangle",
+        src: idInsertionPiGreen,
+      },
+      {
+        method: "hint",
+        name: "HINT",
+        variant: "Green · rectangle",
+        src: idInsertionHintGreen,
+      },
+      {
+        method: "pi",
+        name: "π₀.₅",
+        variant: "Red · L-shape",
+        src: idInsertionPiRedL,
+      },
+      {
+        method: "hint",
+        name: "HINT",
+        variant: "Red · L-shape",
+        src: idInsertionHintRedL,
+      },
+    ],
   },
 ];
 
@@ -74,6 +145,12 @@ const oodTasks: Task[] = [
       sub: { hint: 80.4, pi: 52.2, delta: 28.2 },
       full: { hint: 30.0, pi: 0.0, delta: 30.0 },
     },
+    videos: [
+      { method: "pi", name: "π₀.₅", variant: "Left", src: oodSortingPiLeft },
+      { method: "hint", name: "HINT", variant: "Left", src: oodSortingHintLeft },
+      { method: "pi", name: "π₀.₅", variant: "Right", src: oodSortingPiRight },
+      { method: "hint", name: "HINT", variant: "Right", src: oodSortingHintRight },
+    ],
   },
   {
     id: "spelling",
@@ -86,6 +163,12 @@ const oodTasks: Task[] = [
       sub: { hint: 87.5, pi: 36.4, delta: 51.1 },
       full: { hint: 30.0, pi: 0.0, delta: 30.0 },
     },
+    videos: [
+      { method: "pi", name: "π₀.₅", variant: "APPLE", src: oodSpellingPiApple },
+      { method: "hint", name: "HINT", variant: "APPLE", src: oodSpellingHintApple },
+      { method: "pi", name: "π₀.₅", variant: "ROBOT", src: oodSpellingPiRobot },
+      { method: "hint", name: "HINT", variant: "ROBOT", src: oodSpellingHintRobot },
+    ],
   },
   {
     id: "insertion",
@@ -98,6 +181,32 @@ const oodTasks: Task[] = [
       sub: { hint: 55.0, pi: 20.0, delta: 35.0 },
       full: { hint: 30.0, pi: 0.0, delta: 30.0 },
     },
+    videos: [
+      {
+        method: "pi",
+        name: "π₀.₅",
+        variant: "Middle · rectangle",
+        src: oodInsertionPiMiddle,
+      },
+      {
+        method: "hint",
+        name: "HINT",
+        variant: "Middle · rectangle",
+        src: oodInsertionHintMiddle,
+      },
+      {
+        method: "pi",
+        name: "π₀.₅",
+        variant: "Red · circle",
+        src: oodInsertionPiCircle,
+      },
+      {
+        method: "hint",
+        name: "HINT",
+        variant: "Red · circle",
+        src: oodInsertionHintCircle,
+      },
+    ],
   },
 ];
 
@@ -108,13 +217,6 @@ const metricCards = [
   { key: "is" as const, label: "Intention Score", short: "IS" },
   { key: "sub" as const, label: "Subtask Success Rate", short: "Sub. SR" },
   { key: "full" as const, label: "Full-Task Success Rate", short: "Full SR" },
-];
-
-const rollouts = [
-  { method: "pi" as const, name: "π₀.₅", trial: 1 },
-  { method: "hint" as const, name: "HINT", trial: 1 },
-  { method: "pi" as const, name: "π₀.₅", trial: 2 },
-  { method: "hint" as const, name: "HINT", trial: 2 },
 ];
 ---
 
@@ -199,7 +301,7 @@ const rollouts = [
           </div>
 
           <div class="grid gap-3 sm:grid-cols-2">
-            {rollouts.map((item) => {
+            {task.videos.map((item) => {
               const ours = item.method === "hint";
               return (
                 <article
@@ -210,45 +312,18 @@ const rollouts = [
                       : "border-zinc-200 dark:border-zinc-800",
                   ]}
                 >
-                  <div class="video-shell relative aspect-video overflow-hidden bg-zinc-950">
-                    <div class="absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 p-3">
-                      <span
-                        class:list={[
-                          "rounded-full px-2.5 py-1 text-xs font-semibold backdrop-blur-sm",
-                          ours
-                            ? "bg-emerald-500/90 text-white"
-                            : "bg-black/55 text-white",
-                        ]}
-                      >
-                        {item.name}
-                      </span>
-                      <span class="rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-medium text-white/90 backdrop-blur-sm">
-                        Rollout {item.trial}
-                      </span>
-                    </div>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/70">
-                      <span class="flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          class="ml-0.5 h-6 w-6"
-                          aria-hidden="true"
-                        >
-                          <path d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.1-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
-                        </svg>
-                      </span>
-                      <span class="text-xs tracking-wide text-white/60">
-                        Video placeholder
-                      </span>
-                    </div>
-                    <div class="absolute inset-x-0 bottom-0 flex items-center gap-2 bg-black/55 px-3 py-2">
-                      <span class="h-2 w-2 rounded-full bg-white/80"></span>
-                      <span class="h-1 flex-1 rounded-full bg-white/25">
-                        <span class="block h-1 w-1/5 rounded-full bg-white/80"></span>
-                      </span>
-                      <span class="text-[10px] text-white/70">0:00</span>
-                    </div>
+                  <div class="bg-black">
+                    <video
+                      class="experiment-rollout-video w-full bg-black object-contain"
+                      src={item.src}
+                      aria-label={`${task.title}: ${item.name} ${item.variant}`}
+                      controls
+                      loop
+                      muted
+                      playsinline
+                      autoplay
+                      preload="metadata"
+                    />
                   </div>
                 </article>
               );
@@ -261,6 +336,30 @@ const rollouts = [
 </div>
 
 <script>
+  const pauseVideos = (root: HTMLElement) => {
+    root.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+      video.pause();
+    });
+  };
+
+  const playVisible = (root: HTMLElement) => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) return;
+
+    root.querySelectorAll<HTMLElement>("[data-task-panel]").forEach((panel) => {
+      const active = !panel.classList.contains("hidden");
+      panel.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+        if (active) {
+          void video.play().catch(() => undefined);
+        } else {
+          video.pause();
+        }
+      });
+    });
+  };
+
   const activate = (root: HTMLElement, taskId: string) => {
     root.querySelectorAll<HTMLButtonElement>("[data-task-btn]").forEach((btn) => {
       btn.setAttribute(
@@ -274,6 +373,9 @@ const rollouts = [
       panel.classList.toggle("hidden", !active);
       panel.classList.toggle("block", active);
     });
+
+    pauseVideos(root);
+    playVisible(root);
   };
 
   document.querySelectorAll<HTMLElement>(".experiment-demos").forEach((root) => {
@@ -283,13 +385,29 @@ const rollouts = [
         if (taskId) activate(root, taskId);
       });
     });
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) {
+      root.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
+        video.removeAttribute("autoplay");
+        video.pause();
+      });
+      return;
+    }
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) playVisible(root);
+            else pauseVideos(root);
+          }
+        },
+        { threshold: 0.2 },
+      );
+      observer.observe(root);
+    }
   });
 </script>
-
-<style>
-  .video-shell {
-    background:
-      radial-gradient(circle at 30% 20%, rgb(59 130 246 / 0.22), transparent 28%),
-      linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  }
-</style>
