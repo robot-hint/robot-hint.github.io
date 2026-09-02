@@ -321,7 +321,6 @@ const metricCards = [
                       loop
                       muted
                       playsinline
-                      autoplay
                       preload="metadata"
                     />
                   </div>
@@ -342,24 +341,6 @@ const metricCards = [
     });
   };
 
-  const playVisible = (root: HTMLElement) => {
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduceMotion) return;
-
-    root.querySelectorAll<HTMLElement>("[data-task-panel]").forEach((panel) => {
-      const active = !panel.classList.contains("hidden");
-      panel.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
-        if (active) {
-          void video.play().catch(() => undefined);
-        } else {
-          video.pause();
-        }
-      });
-    });
-  };
-
   const activate = (root: HTMLElement, taskId: string) => {
     root.querySelectorAll<HTMLButtonElement>("[data-task-btn]").forEach((btn) => {
       btn.setAttribute(
@@ -375,7 +356,6 @@ const metricCards = [
     });
 
     pauseVideos(root);
-    playVisible(root);
   };
 
   document.querySelectorAll<HTMLElement>(".experiment-demos").forEach((root) => {
@@ -385,29 +365,5 @@ const metricCards = [
         if (taskId) activate(root, taskId);
       });
     });
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduceMotion) {
-      root.querySelectorAll<HTMLVideoElement>("video").forEach((video) => {
-        video.removeAttribute("autoplay");
-        video.pause();
-      });
-      return;
-    }
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) playVisible(root);
-            else pauseVideos(root);
-          }
-        },
-        { threshold: 0.2 },
-      );
-      observer.observe(root);
-    }
   });
 </script>
