@@ -8,7 +8,7 @@ import insertion2 from "../assets/video/highlighting/insertion-2.mp4";
 
 interface PromptPart {
   text: string;
-  tone?: "pink" | "blue" | "green" | "orange" | "amber";
+  tone?: "pink" | "blue" | "green" | "orange" | "amber" | "red";
 }
 
 interface Demo {
@@ -33,6 +33,7 @@ const toneClass: Record<NonNullable<PromptPart["tone"]>, string> = {
     "rounded px-1 font-semibold bg-orange-100 text-orange-700 dark:bg-orange-950/80 dark:text-orange-300",
   amber:
     "rounded px-1 font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300",
+  red: "rounded px-1 font-semibold bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300",
 };
 
 const tasks: Task[] = [
@@ -82,18 +83,24 @@ const tasks: Task[] = [
         src: spelling1,
         label: "Demo 1",
         prompt: [
+          { text: '"' },
+          { text: "Human Instruction:", tone: "red" },
           {
-            text: "Identify the word from the reference image, then spell it with letter blocks on the board.",
+            text: " Identify the object in front of the board and select the corresponding letter blocks and place them on the board in sequence.",
           },
+          { text: '"' },
         ],
       },
       {
         src: spelling2,
         label: "Demo 2",
         prompt: [
+          { text: '"' },
+          { text: "Human Instruction:", tone: "red" },
           {
-            text: "Identify the word from the reference image, then spell it with letter blocks on the board.",
+            text: "Identify the object in front of the board and select the corresponding letter blocks and place them on the board in sequence.",
           },
+          { text: '"' },
         ],
       },
     ],
@@ -135,7 +142,7 @@ const tasks: Task[] = [
     class="border-b border-zinc-100 bg-gradient-to-br from-blue-50/80 via-white to-zinc-50 px-5 py-5 sm:px-8 sm:py-6 dark:border-zinc-800 dark:from-blue-950/30 dark:via-zinc-950 dark:to-zinc-950"
   >
     <div
-      class="flex flex-wrap justify-center gap-2"
+      class="flex flex-wrap justify-center gap-4 sm:gap-6"
       role="tablist"
       aria-label="Highlighting demonstration tasks"
     >
@@ -145,9 +152,9 @@ const tasks: Task[] = [
             type="button"
             data-hl-btn={task.id}
             aria-selected={index === 0 ? "true" : "false"}
-            class="rounded-full border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-600 shadow-sm transition-all hover:border-blue-300 hover:text-blue-700 aria-selected:border-transparent aria-selected:bg-blue-600 aria-selected:text-white aria-selected:shadow-md aria-selected:hover:bg-blue-700 aria-selected:hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-blue-500 dark:aria-selected:bg-blue-500 dark:aria-selected:text-zinc-950"
+            class="rounded-full border border-zinc-200 bg-white px-6 py-2.5 text-sm font-semibold whitespace-nowrap text-zinc-600 shadow-sm transition-all hover:border-blue-300 hover:text-blue-700 aria-selected:border-transparent aria-selected:bg-blue-600 aria-selected:text-white aria-selected:shadow-md aria-selected:hover:bg-blue-700 aria-selected:hover:text-white dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-blue-500 dark:aria-selected:bg-blue-500 dark:aria-selected:text-zinc-950"
           >
-            {task.label}
+            {task.title}
           </button>
         ))
       }
